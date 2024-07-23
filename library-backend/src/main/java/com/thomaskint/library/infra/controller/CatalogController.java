@@ -3,6 +3,7 @@ package com.thomaskint.library.infra.controller;
 import com.thomaskint.library.domain.*;
 import com.thomaskint.library.domain.repository.BookRepository;
 import com.thomaskint.library.domain.service.CatalogService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,26 +20,31 @@ public class CatalogController {
         this.catalogService = catalogService;
     }
 
-    @GetMapping("books")
+    @Operation(summary = "List books")
+    @GetMapping(value = "books")
     List<Book> listBooks() {
         return bookRepository.all();
     }
 
+    @Operation(summary = "Register a book into the catalog")
     @PostMapping("book")
     Book register(@RequestBody BookInput input) {
         return bookRepository.save(input.toBook());
     }
 
+    @Operation(summary = "Borrow a book")
     @PostMapping("book/{bookId}/borrow")
     Loan borrowBook(@PathVariable UUID bookId, @RequestBody BorrowInput input) throws DomainException {
         return catalogService.borrowBook(bookId, input);
     }
 
+    @Operation(summary = "Return a book")
     @PostMapping("book/{bookId}/return/{borrowerId}")
     void returnBook(@PathVariable UUID bookId, @PathVariable UUID borrowerId) throws DomainException {
         catalogService.returnBook(bookId, borrowerId);
     }
 
+    @Operation(summary = "List user's currently borrowed books")
     @GetMapping("borrower/{borrowerId}/books")
     List<Book> listBorrowerBooks(@PathVariable UUID borrowerId) {
         return bookRepository.all().stream()
@@ -46,6 +52,7 @@ public class CatalogController {
                 .toList();
     }
 
+    @Operation(summary = "List user's current loans")
     @GetMapping("borrower/{borrowerId}/loans")
     List<Loan> listBorrowerLoans(@PathVariable UUID borrowerId) {
         return bookRepository.all().stream()
