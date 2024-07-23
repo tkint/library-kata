@@ -8,3 +8,8 @@ SpringBoot application with the following features :
 4. A user can return a book
 5. A user can list his borrowed books
 6. A user can list his active loans
+
+There is a swagger available at :
+http://localhost:8080/swagger-ui/index.html
+
+Everything is stored in memory without any database.
